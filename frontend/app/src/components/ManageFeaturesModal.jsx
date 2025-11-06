@@ -1,4 +1,5 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useMemo } from "react";
+
 import { useDispatch, useSelector } from "react-redux";
 import axios from "axios";
 import { listTenants } from "../redux/actions/tenantAction";
@@ -11,86 +12,89 @@ const ManageFeaturesModal = ({ show, handleClose, tenant }) => {
   const [saving, setSaving] = useState(false);
 
   // Available features
-  const availableFeatures = [
-    {
-      id: "crm",
-      name: "CRM",
-      description: "Customer Relationship Management",
-      category: "Sales",
-    },
-    {
-      id: "deal-pipeline",
-      name: "Deal Pipeline",
-      description: "Track and manage sales opportunities",
-      category: "Sales",
-    },
-    {
-      id: "task-management",
-      name: "Task Management",
-      description: "Create and assign tasks to team members",
-      category: "Productivity",
-    },
-    {
-      id: "email-integration",
-      name: "Email Integration",
-      description: "Send and track emails within the CRM",
-      category: "Communication",
-    },
-    {
-      id: "advanced-reporting",
-      name: "Advanced Reporting",
-      description: "Generate detailed sales and activity reports",
-      category: "Analytics",
-    },
-    {
-      id: "analytics",
-      name: "Analytics",
-      description: "Business Intelligence and Reporting",
-      category: "Analytics",
-    },
-    {
-      id: "custom-dashboards",
-      name: "Custom Dashboards",
-      description: "Create personalized analytics dashboards",
-      category: "Analytics",
-    },
-    {
-      id: "scheduled-reports",
-      name: "Scheduled Reports",
-      description: "Set up automated report delivery",
-      category: "Analytics",
-    },
-    {
-      id: "data-export",
-      name: "Data Export",
-      description: "Export data in various formats",
-      category: "Analytics",
-    },
-    {
-      id: "api-access",
-      name: "API Access",
-      description: "Access analytics data via API",
-      category: "Analytics",
-    },
-    {
-      id: "predictive-analytics",
-      name: "Predictive Analytics",
-      description: "AI-powered business predictions",
-      category: "Analytics",
-    },
-    {
-      id: "marketing",
-      name: "Marketing",
-      description: "Marketing Automation and Campaigns",
-      category: "Marketing",
-    },
-    {
-      id: "support",
-      name: "Support",
-      description: "Customer Support and Ticketing",
-      category: "Support",
-    },
-  ];
+  const availableFeatures = useMemo(
+    () => [
+      {
+        id: "crm",
+        name: "CRM",
+        description: "Customer Relationship Management",
+        category: "Sales",
+      },
+      {
+        id: "deal-pipeline",
+        name: "Deal Pipeline",
+        description: "Track and manage sales opportunities",
+        category: "Sales",
+      },
+      {
+        id: "task-management",
+        name: "Task Management",
+        description: "Create and assign tasks to team members",
+        category: "Productivity",
+      },
+      {
+        id: "email-integration",
+        name: "Email Integration",
+        description: "Send and track emails within the CRM",
+        category: "Communication",
+      },
+      {
+        id: "advanced-reporting",
+        name: "Advanced Reporting",
+        description: "Generate detailed sales and activity reports",
+        category: "Analytics",
+      },
+      {
+        id: "analytics",
+        name: "Analytics",
+        description: "Business Intelligence and Reporting",
+        category: "Analytics",
+      },
+      {
+        id: "custom-dashboards",
+        name: "Custom Dashboards",
+        description: "Create personalized analytics dashboards",
+        category: "Analytics",
+      },
+      {
+        id: "scheduled-reports",
+        name: "Scheduled Reports",
+        description: "Set up automated report delivery",
+        category: "Analytics",
+      },
+      {
+        id: "data-export",
+        name: "Data Export",
+        description: "Export data in various formats",
+        category: "Analytics",
+      },
+      {
+        id: "api-access",
+        name: "API Access",
+        description: "Access analytics data via API",
+        category: "Analytics",
+      },
+      {
+        id: "predictive-analytics",
+        name: "Predictive Analytics",
+        description: "AI-powered business predictions",
+        category: "Analytics",
+      },
+      {
+        id: "marketing",
+        name: "Marketing",
+        description: "Marketing Automation and Campaigns",
+        category: "Marketing",
+      },
+      {
+        id: "support",
+        name: "Support",
+        description: "Customer Support and Ticketing",
+        category: "Support",
+      },
+    ],
+    []
+  );
 
   const [enabledFeatures, setEnabledFeatures] = useState({});
 
