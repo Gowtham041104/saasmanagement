@@ -15,7 +15,10 @@ app.get("/",(req,res)=>{
 app.use('/api/auth',authRoutes)
 app.use('/api/products', productRoutes);
 app.use('/api/tenants', tenantRoutes);
-app.use('/api/users', userRoutes);
+app.use('/api/users', userRoutes); 
 
 const PORT = process.env.PORT || 5001;
+
+
+
 app.listen(PORT,console.log("server is running at the PORT",PORT))
