@@ -1,8 +1,8 @@
-import React, { useState, useEffect } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
-import axios from 'axios';
-import { listTenants } from '../redux/actions/tenantAction';
-import './ManageFeaturesModal.css';
+import React, { useState, useEffect } from "react";
+import { useDispatch, useSelector } from "react-redux";
+import axios from "axios";
+import { listTenants } from "../redux/actions/tenantAction";
+import "./ManageFeaturesModal.css";
 
 const ManageFeaturesModal = ({ show, handleClose, tenant }) => {
   const dispatch = useDispatch();
@@ -13,83 +13,83 @@ const ManageFeaturesModal = ({ show, handleClose, tenant }) => {
   // Available features
   const availableFeatures = [
     {
-      id: 'crm',
-      name: 'CRM',
-      description: 'Customer Relationship Management',
-      category: 'Sales'
+      id: "crm",
+      name: "CRM",
+      description: "Customer Relationship Management",
+      category: "Sales",
     },
     {
-      id: 'deal-pipeline',
-      name: 'Deal Pipeline',
-      description: 'Track and manage sales opportunities',
-      category: 'Sales'
+      id: "deal-pipeline",
+      name: "Deal Pipeline",
+      description: "Track and manage sales opportunities",
+      category: "Sales",
     },
     {
-      id: 'task-management',
-      name: 'Task Management',
-      description: 'Create and assign tasks to team members',
-      category: 'Productivity'
+      id: "task-management",
+      name: "Task Management",
+      description: "Create and assign tasks to team members",
+      category: "Productivity",
     },
     {
-      id: 'email-integration',
-      name: 'Email Integration',
-      description: 'Send and track emails within the CRM',
-      category: 'Communication'
+      id: "email-integration",
+      name: "Email Integration",
+      description: "Send and track emails within the CRM",
+      category: "Communication",
     },
     {
-      id: 'advanced-reporting',
-      name: 'Advanced Reporting',
-      description: 'Generate detailed sales and activity reports',
-      category: 'Analytics'
+      id: "advanced-reporting",
+      name: "Advanced Reporting",
+      description: "Generate detailed sales and activity reports",
+      category: "Analytics",
     },
     {
-      id: 'analytics',
-      name: 'Analytics',
-      description: 'Business Intelligence and Reporting',
-      category: 'Analytics'
+      id: "analytics",
+      name: "Analytics",
+      description: "Business Intelligence and Reporting",
+      category: "Analytics",
     },
     {
-      id: 'custom-dashboards',
-      name: 'Custom Dashboards',
-      description: 'Create personalized analytics dashboards',
-      category: 'Analytics'
+      id: "custom-dashboards",
+      name: "Custom Dashboards",
+      description: "Create personalized analytics dashboards",
+      category: "Analytics",
     },
     {
-      id: 'scheduled-reports',
-      name: 'Scheduled Reports',
-      description: 'Set up automated report delivery',
-      category: 'Analytics'
+      id: "scheduled-reports",
+      name: "Scheduled Reports",
+      description: "Set up automated report delivery",
+      category: "Analytics",
     },
     {
-      id: 'data-export',
-      name: 'Data Export',
-      description: 'Export data in various formats',
-      category: 'Analytics'
+      id: "data-export",
+      name: "Data Export",
+      description: "Export data in various formats",
+      category: "Analytics",
     },
     {
-      id: 'api-access',
-      name: 'API Access',
-      description: 'Access analytics data via API',
-      category: 'Analytics'
+      id: "api-access",
+      name: "API Access",
+      description: "Access analytics data via API",
+      category: "Analytics",
     },
     {
-      id: 'predictive-analytics',
-      name: 'Predictive Analytics',
-      description: 'AI-powered business predictions',
-      category: 'Analytics'
+      id: "predictive-analytics",
+      name: "Predictive Analytics",
+      description: "AI-powered business predictions",
+      category: "Analytics",
     },
     {
-      id: 'marketing',
-      name: 'Marketing',
-      description: 'Marketing Automation and Campaigns',
-      category: 'Marketing'
+      id: "marketing",
+      name: "Marketing",
+      description: "Marketing Automation and Campaigns",
+      category: "Marketing",
     },
     {
-      id: 'support',
-      name: 'Support',
-      description: 'Customer Support and Ticketing',
-      category: 'Support'
-    }
+      id: "support",
+      name: "Support",
+      description: "Customer Support and Ticketing",
+      category: "Support",
+    },
   ];
 
   const [enabledFeatures, setEnabledFeatures] = useState({});
@@ -98,7 +98,7 @@ const ManageFeaturesModal = ({ show, handleClose, tenant }) => {
   useEffect(() => {
     const loadFeatures = async () => {
       if (!tenant || !userInfo) return;
-      
+
       setLoading(true);
       try {
         const config = {
@@ -106,15 +106,18 @@ const ManageFeaturesModal = ({ show, handleClose, tenant }) => {
             Authorization: `Bearer ${userInfo.token}`,
           },
         };
-        
-        const { data } = await axios.get(`/api/products/client/${tenant._id}`, config);
-        
+
+        const { data } = await axios.get(
+          `/api/products/client/${tenant._id}`,
+          config
+        );
+
         // Initialize enabled features
         const enabled = {};
-        availableFeatures.forEach(feature => {
+        availableFeatures.forEach((feature) => {
           enabled[feature.id] = false;
         });
-        
+
         // Mark features as enabled if they exist
         if (data.length > 0 && data[0].features) {
           Object.entries(data[0].features).forEach(([key, value]) => {
@@ -123,57 +126,60 @@ const ManageFeaturesModal = ({ show, handleClose, tenant }) => {
             }
           });
         }
-        
+
         setEnabledFeatures(enabled);
       } catch (error) {
-        console.error('Error loading features:', error);
+        console.error("Error loading features:", error);
       } finally {
         setLoading(false);
       }
     };
-    
+
     if (show && tenant) {
       loadFeatures();
     }
-  }, [show, tenant, userInfo]);
+  }, [show, tenant, userInfo, availableFeatures]);
 
   const toggleFeature = (featureId) => {
-    setEnabledFeatures(prev => ({
+    setEnabledFeatures((prev) => ({
       ...prev,
-      [featureId]: !prev[featureId]
+      [featureId]: !prev[featureId],
     }));
   };
 
   const handleSave = async () => {
     if (!tenant || !userInfo) return;
-    
+
     setSaving(true);
     try {
       const config = {
         headers: {
-          'Content-Type': 'application/json',
+          "Content-Type": "application/json",
           Authorization: `Bearer ${userInfo.token}`,
         },
       };
-      
+
       // Save features
       await axios.post(
-        '/api/products',
+        "/api/products",
         {
           features: enabledFeatures,
           clientId: tenant._id,
         },
         config
       );
-      
+
       // Refresh tenant list
       dispatch(listTenants());
-      
-      alert('Features updated successfully!');
+
+      alert("Features updated successfully!");
       handleClose();
     } catch (error) {
-      console.error('Error saving features:', error);
-      alert('Failed to save features: ' + (error.response?.data?.message || error.message));
+      console.error("Error saving features:", error);
+      alert(
+        "Failed to save features: " +
+          (error.response?.data?.message || error.message)
+      );
     } finally {
       setSaving(false);
     }
@@ -192,12 +198,21 @@ const ManageFeaturesModal = ({ show, handleClose, tenant }) => {
 
   return (
     <div className="modal-overlay" onClick={handleClose}>
-      <div className="modal-container features-modal" onClick={(e) => e.stopPropagation()}>
+      <div
+        className="modal-container features-modal"
+        onClick={(e) => e.stopPropagation()}
+      >
         <div className="modal-header">
           <h2>Manage Features</h2>
           <button className="modal-close" onClick={handleClose}>
             <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
-              <path d="M18 6L6 18M6 6l12 12" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+              <path
+                d="M18 6L6 18M6 6l12 12"
+                stroke="currentColor"
+                strokeWidth="2"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+              />
             </svg>
           </button>
         </div>
@@ -222,11 +237,13 @@ const ManageFeaturesModal = ({ show, handleClose, tenant }) => {
               {Object.entries(groupedFeatures).map(([category, features]) => (
                 <div key={category} className="feature-category">
                   <h4 className="category-title">{category}</h4>
-                  {features.map(feature => (
+                  {features.map((feature) => (
                     <div key={feature.id} className="feature-item">
                       <div className="feature-info">
                         <div className="feature-name">{feature.name}</div>
-                        <div className="feature-description">{feature.description}</div>
+                        <div className="feature-description">
+                          {feature.description}
+                        </div>
                       </div>
                       <label className="toggle-switch">
                         <input
@@ -246,11 +263,21 @@ const ManageFeaturesModal = ({ show, handleClose, tenant }) => {
         </div>
 
         <div className="modal-footer">
-          <button type="button" className="btn-cancel" onClick={handleClose} disabled={saving}>
+          <button
+            type="button"
+            className="btn-cancel"
+            onClick={handleClose}
+            disabled={saving}
+          >
             Cancel
           </button>
-          <button type="button" className="btn-save" onClick={handleSave} disabled={saving || loading}>
-            {saving ? 'Saving...' : 'Save Features'}
+          <button
+            type="button"
+            className="btn-save"
+            onClick={handleSave}
+            disabled={saving || loading}
+          >
+            {saving ? "Saving..." : "Save Features"}
           </button>
         </div>
       </div>
