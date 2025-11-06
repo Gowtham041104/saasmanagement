@@ -18,96 +18,66 @@ import {
   USER_STATS_FAIL,
 } from '../constants/userConstants';
 
-/**
- * User login action
- * @param {string} email - User email
- * @param {string} password - User password
- */
+const API = process.env.REACT_APP_API_URL;
+
+// ✅ LOGIN
 export const login = (email, password) => async (dispatch) => {
   try {
     dispatch({ type: USER_LOGIN_REQUEST });
 
     const config = {
-      headers: { 
-        'Content-Type': 'application/json',
-      },
+      headers: { 'Content-Type': 'application/json' },
     };
 
     const { data } = await axios.post(
-      '/api/auth/login', 
-      { email, password }, 
+      `${API}/api/auth/login`,
+      { email, password },
       config
     );
 
-    dispatch({ 
-      type: USER_LOGIN_SUCCESS, 
-      payload: data 
-    });
-
+    dispatch({ type: USER_LOGIN_SUCCESS, payload: data });
     localStorage.setItem('userInfo', JSON.stringify(data));
   } catch (error) {
     dispatch({
       type: USER_LOGIN_FAIL,
-      payload: error.response?.data?.message || 
-              error.message ||
-              'Login failed. Please try again.',
+      payload: error.response?.data?.message || error.message,
     });
   }
 };
 
-/**
- * User registration action
- * @param {string} name - User name
- * @param {string} email - User email
- * @param {string} password - User password
- */
+// ✅ REGISTER
 export const register = (username, email, password) => async (dispatch) => {
   try {
     dispatch({ type: USER_REGISTER_REQUEST });
 
     const config = {
-      headers: {
-        'Content-Type': 'application/json',
-      },
+      headers: { 'Content-Type': 'application/json' },
     };
 
     const { data } = await axios.post(
-      '/api/auth/signup',
-      { username, email, password }, // ✅ Corrected here
+      `${API}/api/auth/signup`,
+      { username, email, password },
       config
     );
 
     dispatch({ type: USER_REGISTER_SUCCESS, payload: data });
+
     localStorage.setItem('userInfo', JSON.stringify(data));
   } catch (error) {
     dispatch({
       type: USER_REGISTER_FAIL,
-      payload:
-        error.response?.data?.message ||
-        error.message ||
-        'Registration failed',
+      payload: error.response?.data?.message || error.message,
     });
   }
 };
-/**
- * User logout action
- */
+
+// ✅ LOGOUT
 export const logout = () => (dispatch) => {
-  // Remove user data from localStorage
   localStorage.removeItem('userInfo');
-  
-  // Dispatch logout action
   dispatch({ type: USER_LOGOUT });
-  
-  // Optional: Clear any other user-related data
-  localStorage.removeItem('cartItems');
-  localStorage.removeItem('shippingAddress');
-  localStorage.removeItem('paymentMethod');
 };
 
-/**
- * Get user profile action
- */
+// ✅ GET PROFILE
 export const getUserProfile = () => async (dispatch, getState) => {
   try {
     dispatch({ type: USER_PROFILE_REQUEST });
@@ -118,31 +88,22 @@ export const getUserProfile = () => async (dispatch, getState) => {
 
     const config = {
       headers: {
-        'Content-Type': 'application/json',
         Authorization: `Bearer ${userInfo.token}`,
       },
     };
 
-    const { data } = await axios.get('/api/users/profile', config);
+    const { data } = await axios.get(`${API}/api/users/profile`, config);
 
-    dispatch({
-      type: USER_PROFILE_SUCCESS,
-      payload: data,
-    });
+    dispatch({ type: USER_PROFILE_SUCCESS, payload: data });
   } catch (error) {
     dispatch({
       type: USER_PROFILE_FAIL,
-      payload:
-        error.response?.data?.message ||
-        error.message ||
-        'Failed to fetch profile',
+      payload: error.response?.data?.message || error.message,
     });
   }
 };
 
-/**
- * Update user profile action
- */
+// ✅ UPDATE PROFILE
 export const updateUserProfile = (userData) => async (dispatch, getState) => {
   try {
     dispatch({ type: USER_UPDATE_PROFILE_REQUEST });
@@ -158,36 +119,27 @@ export const updateUserProfile = (userData) => async (dispatch, getState) => {
       },
     };
 
-    const { data } = await axios.put('/api/users/profile', userData, config);
+    const { data } = await axios.put(
+      `${API}/api/users/profile`,
+      userData,
+      config
+    );
 
-    dispatch({
-      type: USER_UPDATE_PROFILE_SUCCESS,
-      payload: data,
-    });
+    dispatch({ type: USER_UPDATE_PROFILE_SUCCESS, payload: data });
 
-    // Update userInfo in localStorage with new data
-    const updatedUserInfo = { ...userInfo, ...data };
-    localStorage.setItem('userInfo', JSON.stringify(updatedUserInfo));
+    const updatedUser = { ...userInfo, ...data };
+    localStorage.setItem('userInfo', JSON.stringify(updatedUser));
 
-    // Also update login state
-    dispatch({
-      type: USER_LOGIN_SUCCESS,
-      payload: updatedUserInfo,
-    });
+    dispatch({ type: USER_LOGIN_SUCCESS, payload: updatedUser });
   } catch (error) {
     dispatch({
       type: USER_UPDATE_PROFILE_FAIL,
-      payload:
-        error.response?.data?.message ||
-        error.message ||
-        'Failed to update profile',
+      payload: error.response?.data?.message || error.message,
     });
   }
 };
 
-/**
- * Get user statistics action
- */
+// ✅ USER STATS
 export const getUserStats = () => async (dispatch, getState) => {
   try {
     dispatch({ type: USER_STATS_REQUEST });
@@ -202,22 +154,15 @@ export const getUserStats = () => async (dispatch, getState) => {
       },
     };
 
-    const { data } = await axios.get('/api/users/stats', config);
+    const { data } = await axios.get(`${API}/api/users/stats`, config);
 
-    dispatch({
-      type: USER_STATS_SUCCESS,
-      payload: data,
-    });
+    dispatch({ type: USER_STATS_SUCCESS, payload: data });
   } catch (error) {
     dispatch({
       type: USER_STATS_FAIL,
-      payload:
-        error.response?.data?.message ||
-        error.message ||
-        'Failed to fetch statistics',
+      payload: error.response?.data?.message || error.message,
     });
   }
 };
 
-// For backward compatibility
 export const signup = register;

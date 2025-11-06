@@ -1,4 +1,4 @@
-import axios from 'axios';
+import axios from "axios";
 import {
   TENANT_LIST_REQUEST,
   TENANT_LIST_SUCCESS,
@@ -15,14 +15,16 @@ import {
   TENANT_DETAILS_REQUEST,
   TENANT_DETAILS_SUCCESS,
   TENANT_DETAILS_FAIL,
-} from '../constants/tenantConstant';
+} from "../constants/tenantConstant";
+
+const API = process.env.REACT_APP_API_URL;
 
 // 🔹 List all tenants
 export const listTenants = () => async (dispatch) => {
   try {
     dispatch({ type: TENANT_LIST_REQUEST });
 
-    const { data } = await axios.get('/api/tenants');
+    const { data } = await axios.get(`${API}/api/tenants`);
 
     dispatch({
       type: TENANT_LIST_SUCCESS,
@@ -45,23 +47,14 @@ export const createTenant = (tenantData) => async (dispatch, getState) => {
       userLogin: { userInfo },
     } = getState();
 
-    if (!userInfo || !userInfo.token) {
-      throw new Error('User authentication required');
-    }
-
     const config = {
       headers: {
-        'Content-Type': 'application/json',
+        "Content-Type": "application/json",
         Authorization: `Bearer ${userInfo.token}`,
       },
     };
 
-    const payload = {
-      ...tenantData,
-      createdBy: userInfo.userId || userInfo._id,
-    };
-
-    const { data } = await axios.post('/api/tenants', payload, config);
+    const { data } = await axios.post(`${API}/api/tenants`, tenantData, config);
 
     dispatch({ type: TENANT_CREATE_SUCCESS, payload: data });
   } catch (error) {
@@ -77,20 +70,17 @@ export const updateTenant = (id, tenantData) => async (dispatch, getState) => {
   try {
     dispatch({ type: TENANT_UPDATE_REQUEST });
 
-    const userInfo = getState()?.userLogin?.userInfo;
-
-    if (!userInfo || !userInfo.token) {
-      throw new Error('User not authenticated');
-    }
+    const { userLogin: { userInfo } } = getState();
 
     const config = {
       headers: {
-        'Content-Type': 'application/json',
+        "Content-Type": "application/json",
         Authorization: `Bearer ${userInfo.token}`,
       },
     };
 
-    const { data } = await axios.put(`/api/tenants/${id}`, tenantData, config);
+    const { data } = await axios.put(`${API}/api/tenants/${id}`, tenantData, config);
+
     dispatch({ type: TENANT_UPDATE_SUCCESS, payload: data });
   } catch (error) {
     dispatch({
@@ -99,18 +89,13 @@ export const updateTenant = (id, tenantData) => async (dispatch, getState) => {
     });
   }
 };
+
 // 🔹 Delete a tenant
 export const deleteTenant = (id) => async (dispatch, getState) => {
   try {
     dispatch({ type: TENANT_DELETE_REQUEST });
 
-    const {
-      userLogin: { userInfo },
-    } = getState();
-
-    if (!userInfo || !userInfo.token) {
-      throw new Error('User not authenticated');
-    }
+    const { userLogin: { userInfo } } = getState();
 
     const config = {
       headers: {
@@ -118,7 +103,7 @@ export const deleteTenant = (id) => async (dispatch, getState) => {
       },
     };
 
-    await axios.delete(`/api/tenants/${id}`, config);
+    await axios.delete(`${API}/api/tenants/${id}`, config);
 
     dispatch({
       type: TENANT_DELETE_SUCCESS,
@@ -137,13 +122,7 @@ export const getTenantDetails = (id) => async (dispatch, getState) => {
   try {
     dispatch({ type: TENANT_DETAILS_REQUEST });
 
-    const {
-      userLogin: { userInfo },
-    } = getState();
-
-    if (!userInfo || !userInfo.token) {
-      throw new Error('User not authenticated');
-    }
+    const { userLogin: { userInfo } } = getState();
 
     const config = {
       headers: {
@@ -151,7 +130,7 @@ export const getTenantDetails = (id) => async (dispatch, getState) => {
       },
     };
 
-    const { data } = await axios.get(`/api/tenants/${id}`, config);
+    const { data } = await axios.get(`${API}/api/tenants/${id}`, config);
 
     dispatch({
       type: TENANT_DETAILS_SUCCESS,
