@@ -1,10 +1,12 @@
+// src/components/ManageProductModal.jsx
 import React, { useState, useEffect } from 'react';
 import { Modal, Button, Form } from 'react-bootstrap';
 import { useDispatch } from 'react-redux';
-import { addProduct, updateProduct } from '../redux/actions/productAction';
+import { createProduct, updateProduct } from '../redux/actions/productAction';
 
 const ManageProductModal = ({ tenantId, product, show, onClose }) => {
   const dispatch = useDispatch();
+
   const [formData, setFormData] = useState({
     name: '',
     description: '',
@@ -14,9 +16,9 @@ const ManageProductModal = ({ tenantId, product, show, onClose }) => {
   useEffect(() => {
     if (product) {
       setFormData({
-        name: product.name,
-        description: product.description,
-        status: product.status,
+        name: product.name || '',
+        description: product.description || '',
+        status: product.status || 'active',
       });
     } else {
       setFormData({
@@ -27,31 +29,34 @@ const ManageProductModal = ({ tenantId, product, show, onClose }) => {
     }
   }, [product]);
 
-  const handleSubmit = (e) => {
-    e.preventDefault();
-    if (product) {
-      dispatch(updateProduct(product._id, formData));
-    } else {
-      dispatch(addProduct(tenantId, formData));
-    }
-    onClose();
+  const handleChange = (e) => {
+    const { name, value } = e.target;
+    setFormData((prev) => ({
+      ...prev,
+      [name]: value,
+    }));
   };
 
-  const handleChange = (e) => {
-    setFormData({
-      ...formData,
-      [e.target.name]: e.target.value
-    });
-  };
+ const handleSubmit = (e) => {
+  e.preventDefault();
+
+  if (product) {
+    dispatch(updateProduct(product._id, formData));
+  } else {
+    dispatch(createProduct(tenantId, formData));
+  }
+
+  onClose(); // Close modal after submit
+};
 
   return (
-    <Modal show={show} onHide={onClose}>
+    <Modal show={show} onHide={onClose} centered>
       <Modal.Header closeButton>
         <Modal.Title>{product ? 'Edit Product' : 'Add Product'}</Modal.Title>
       </Modal.Header>
       <Form onSubmit={handleSubmit}>
         <Modal.Body>
-          <Form.Group className="mb-3">
+          <Form.Group controlId="productName" className="mb-3">
             <Form.Label>Product Name</Form.Label>
             <Form.Control
               type="text"
@@ -61,8 +66,8 @@ const ManageProductModal = ({ tenantId, product, show, onClose }) => {
               required
             />
           </Form.Group>
-          
-          <Form.Group className="mb-3">
+
+          <Form.Group controlId="productDescription" className="mb-3">
             <Form.Label>Description</Form.Label>
             <Form.Control
               as="textarea"
@@ -72,8 +77,8 @@ const ManageProductModal = ({ tenantId, product, show, onClose }) => {
               onChange={handleChange}
             />
           </Form.Group>
-          
-          <Form.Group className="mb-3">
+
+          <Form.Group controlId="productStatus" className="mb-3">
             <Form.Label>Status</Form.Label>
             <Form.Select
               name="status"
@@ -85,8 +90,11 @@ const ManageProductModal = ({ tenantId, product, show, onClose }) => {
             </Form.Select>
           </Form.Group>
         </Modal.Body>
+
         <Modal.Footer>
-          <Button variant="secondary" onClick={onClose}>Cancel</Button>
+          <Button variant="secondary" onClick={onClose}>
+            Cancel
+          </Button>
           <Button variant="primary" type="submit">
             {product ? 'Update' : 'Add'} Product
           </Button>

@@ -21,7 +21,7 @@ const SignupScreen = () => {
 
   useEffect(() => {
     if (userInfo) {
-      navigate('/dashboard'); // Only go to dashboard if user is successfully registered
+      navigate('/tenants'); // Only go to dashboard if user is successfully registered
     }
   }, [userInfo, navigate]);
 
@@ -44,7 +44,8 @@ const SignupScreen = () => {
   };
 
   return (
-    <Container className="d-flex align-items-center justify-content-center" style={{ minHeight: '100vh' }}>
+ <Container className="d-flex align-items-center justify-content-center bg-light text-dark" style={{ minHeight: '100vh' }}>
+
       <Row>
         <Col md={12}>
           <h2 className="text-center mb-4">Signup Here</h2>

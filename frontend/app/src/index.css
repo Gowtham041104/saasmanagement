@@ -1,0 +1,89 @@
+/* Global Styles */
+body {
+  margin: 0;
+  padding: 0;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
+    'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
+    sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  background: linear-gradient(135deg, #f0f9ff 0%, #e0f2fe 50%, #f0f9ff 100%);
+  background-attachment: fixed;
+  min-height: 100vh;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+code {
+  font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
+    monospace;
+}
+
+/* Make overall background slightly gray and readable */
+body {
+  background-color: #f8f9fa !important;
+  color: #212529 !important;
+}
+
+/* Ensure all form text and labels are visible */
+.form-label,
+.form-control,
+h2,
+h3,
+p,
+label,
+span,
+a,
+.text-muted {
+  color: #212529 !important;
+}
+
+/* Card styles for consistency */
+.card {
+  background-color: #ffffff !important;
+  border-radius: 12px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+}
+
+/* Make inputs have a soft border for better UI */
+.form-control {
+  border: 1px solid #ced4da;
+  color: #212529;
+}
+
+
+a:hover {
+  text-decoration: underline;
+}
+/* Fix navbar text visibility on light (blue) background */
+.navbar-light .navbar-brand,
+.navbar-light .nav-link,
+.navbar-light .nav-item,
+.navbar-light .navbar-text,
+.navbar-light .dropdown-toggle {
+  color: #ffffff !important; /* make text white */
+  font-weight: 500;
+}
+
+/* Optional: hover color for better interaction */
+.navbar-light .nav-link:hover,
+.navbar-light .dropdown-toggle:hover {
+  color: #e2e6ea !important; /* slightly lighter on hover */
+}
+
+/* Keep dropdown background light and readable */
+.navbar-light .dropdown-menu {
+  background-color: #ffffff !important;
+  border: none;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+}
+
+.navbar-light .dropdown-item {
+  color: #212529 !important;
+}
+
+.navbar-light .dropdown-item:hover {
+  background-color: #f8f9fa !important;
+}

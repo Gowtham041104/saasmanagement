@@ -11,13 +11,36 @@ const userSchema = mongoose.Schema({
         type:String,
         required:true,
         unique:true,
-
     },
     password:{
         type:String,
         required:true,
     },
-  
+    firstName: {
+        type: String,
+        default: '',
+    },
+    lastName: {
+        type: String,
+        default: '',
+    },
+    phone: {
+        type: String,
+        default: '',
+    },
+    avatar: {
+        type: String,
+        default: '',
+    },
+    role: {
+        type: String,
+        enum: ['user', 'admin'],
+        default: 'user',
+    },
+    isActive: {
+        type: Boolean,
+        default: true,
+    },
 },
 {
     timestamps:true,

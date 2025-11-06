@@ -25,14 +25,19 @@ const Header = () => {
         <Navbar.Collapse id="basic-navbar-nav">
           <Nav className="ms-auto ">
             {userInfo ? (
-              <NavDropdown title={userInfo.name} id="username">
-                <NavDropdown.Item as={Link} to="/dashboard">
-                  Dashboard
-                </NavDropdown.Item>
-                <NavDropdown.Item onClick={logoutHandler}>
-                  Logout
-                </NavDropdown.Item>
-              </NavDropdown>
+              <>
+                <Nav.Link as={Link} to="/tenants">
+                  Tenants
+                </Nav.Link>
+                <NavDropdown title={userInfo.name} id="username">
+                  <NavDropdown.Item as={Link} to="/profile">
+                    Profile
+                  </NavDropdown.Item>
+                  <NavDropdown.Item onClick={logoutHandler}>
+                    Logout
+                  </NavDropdown.Item>
+                </NavDropdown>
+              </>
             ) : (
               <Nav.Link as={Link} to="/login">
                 Sign In

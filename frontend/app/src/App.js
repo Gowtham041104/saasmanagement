@@ -7,15 +7,13 @@ import { useSelector } from 'react-redux';
 import Header from './components/Header';
 
 // Screens
-import DashboardScreen from './screens/DashboardScreen';
 import LoginScreen from './screens/LoginScreen';
 import RegisterScreen from './screens/RegisterScreen';
-import TenantScreen from './screens/TenantScreen';
-import ProductScreen from './screens/ProductScreen';
-import ProfileScreen from './screens/ProfileScreen';
+import UserProfile from './screens/UserProfile';
+import TenantManager from './screens/TenantManager';
 
 const App = () => {
-  const { userInfo } = useSelector((state) => state.user || {});
+  const { userInfo } = useSelector((state) => state.userLogin || {});
 
   return (
     <>
@@ -24,11 +22,11 @@ const App = () => {
       <main className="py-4">
         <Container>
           <Routes>
-            {/* Default route: redirect to dashboard if logged in, else to login */}
+            {/* Default route: redirect to tenants if logged in, else to login */}
             <Route
               path="/"
               element={
-                userInfo ? <Navigate to="/dashboard" replace /> : <Navigate to="/login" replace />
+                userInfo ? <Navigate to="/tenants" replace /> : <Navigate to="/login" replace />
               }
             />
 
@@ -37,10 +35,8 @@ const App = () => {
             <Route path="/register" element={<RegisterScreen />} />
 
             {/* All screens accessible directly */}
-            <Route path="/dashboard" element={<DashboardScreen />} />
-            <Route path="/tenants" element={<TenantScreen />} />
-            <Route path="/products" element={<ProductScreen />} />
-            <Route path="/profile" element={<ProfileScreen />} />
+            <Route path="/tenants" element={<TenantManager />} />
+            <Route path="/profile" element={<UserProfile />} />
           </Routes>
         </Container>
       </main>

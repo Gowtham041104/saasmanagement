@@ -15,7 +15,7 @@ const LoginScreen = () => {
 
   useEffect(() => {
     if (userInfo) {
-      navigate('/dashboard');
+      navigate('/tenants');
     }
   }, [userInfo, navigate]);
 
@@ -30,7 +30,8 @@ const LoginScreen = () => {
   };
 
   return (
-    <div className="min-vh-100 d-flex align-items-center justify-content-center">
+  <div className="min-vh-100 d-flex align-items-center justify-content-center bg-light text-dark">
+
       <Container>
         <Row className="justify-content-center">
           <Col md={6} lg={5}>

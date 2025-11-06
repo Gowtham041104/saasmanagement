@@ -2,6 +2,9 @@ import { configureStore } from '@reduxjs/toolkit';
 import {
   userLoginReducer,
   userRegisterReducer,
+  userProfileReducer,
+  userUpdateProfileReducer,
+  userStatsReducer,
 } from './reducers/userReducer';
 
 import {
@@ -11,15 +14,6 @@ import {
   tenantUpdateReducer,
   tenantDeleteReducer,
 } from './reducers/tenantReducer';
-
-import {
-  productListReducer,
-  productDetailsReducer,
-  productCreateReducer,
-  productUpdateReducer,
-  productDeleteReducer,
-  productsByTenantReducer,
-} from './reducers/productReducer';
 
 // Load userInfo from localStorage if available
 const userInfoFromStorage = localStorage.getItem('userInfo')
@@ -36,6 +30,9 @@ const store = configureStore({
     // User reducers
     userLogin: userLoginReducer,
     userRegister: userRegisterReducer,
+    userProfile: userProfileReducer,
+    userUpdateProfile: userUpdateProfileReducer,
+    userStats: userStatsReducer,
 
     // Tenant reducers
     tenantList: tenantListReducer,
@@ -43,15 +40,6 @@ const store = configureStore({
     tenantCreate: tenantCreateReducer,
     tenantUpdate: tenantUpdateReducer,
     tenantDelete: tenantDeleteReducer,
-
-    // Product reducers
-    productList: productListReducer,
-    productDetails: productDetailsReducer,
-    productCreate: productCreateReducer,
-    productUpdate: productUpdateReducer,
-    productDelete: productDeleteReducer,
-    productsByTenant: productsByTenantReducer,
-     productUpdate: productUpdateReducer,
   },
   preloadedState,
   devTools: process.env.NODE_ENV !== 'production',

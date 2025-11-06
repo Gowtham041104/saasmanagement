@@ -1,25 +1,79 @@
+// controllers/productController.js - Simplified for Features only
 const Product = require('../models/Product');
+const Tenant = require('../models/Tenant');
 
-exports.getAllProducts= async (req,res)=>{
-    const products = await Product.find();
+// GET features for a specific tenant
+exports.getProductsByClient = async (req, res) => {
+  try {
+    const { clientId } = req.params;
+
+    // Verify tenant exists
+    const tenant = await Tenant.findById(clientId);
+    if (!tenant) {
+      return res.status(404).json({ message: 'Tenant not found' });
+    }
+
+    const products = await Product.find({ client: clientId }).populate('client', 'name email');
     res.json(products);
-}
-
-exports.createProduct= async (req,res)=>{
-    const { name,description,features}=req.body;
-    const product = new Product({name,description,features});
-    await product.save();
-    res.status(200),json(product);
+  } catch (err) {
+    res.status(500).json({ message: 'Server Error', error: err.message });
+  }
 };
 
-exports.updateProduct = async (req,res)=>{
-    const {id} = req.params;
-    const {name,description,features}=req.body;
-    const product = await Product.findByIdAndUpdate(id,{name,description,features},{new:true});
-    res.json(product);
-}
+// CREATE or UPDATE features for a tenant
+exports.createProduct = async (req, res) => {
+  try {
+    const { features, clientId } = req.body;
 
-exports.deleteProduct = async (req, res) => {
-  await Product.findByIdAndDelete(req.params.id);
-  res.status(204).send();
+    // Verify tenant exists
+    const tenant = await Tenant.findById(clientId);
+    if (!tenant) {
+      return res.status(404).json({ message: 'Tenant not found' });
+    }
+
+    // Check if features already exist for this tenant
+    let product = await Product.findOne({ client: clientId });
+    
+    if (product) {
+      // Update existing features
+      product.features = features;
+      await product.save();
+    } else {
+      // Create new features document
+      product = new Product({ 
+        name: 'Features',
+        features,
+        client: clientId
+      });
+      await product.save();
+    }
+
+    const populatedProduct = await Product.findById(product._id).populate('client', 'name email');
+    res.status(201).json(populatedProduct);
+  } catch (err) {
+    res.status(400).json({ message: 'Failed to save features', error: err.message });
+  }
+};
+
+// UPDATE features for a tenant
+exports.updateProduct = async (req, res) => {
+  try {
+    const { id } = req.params;
+    const { features } = req.body;
+    
+    const product = await Product.findById(id);
+    if (!product) {
+      return res.status(404).json({ message: 'Features not found' });
+    }
+    
+    const updatedProduct = await Product.findByIdAndUpdate(
+      id,
+      { features },
+      { new: true }
+    ).populate('client', 'name email');
+    
+    res.json(updatedProduct);
+  } catch (err) {
+    res.status(400).json({ message: 'Failed to update features', error: err.message });
+  }
 };

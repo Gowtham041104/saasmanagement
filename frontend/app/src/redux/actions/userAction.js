@@ -7,6 +7,15 @@ import {
   USER_REGISTER_REQUEST,
   USER_REGISTER_SUCCESS,
   USER_REGISTER_FAIL,
+  USER_PROFILE_REQUEST,
+  USER_PROFILE_SUCCESS,
+  USER_PROFILE_FAIL,
+  USER_UPDATE_PROFILE_REQUEST,
+  USER_UPDATE_PROFILE_SUCCESS,
+  USER_UPDATE_PROFILE_FAIL,
+  USER_STATS_REQUEST,
+  USER_STATS_SUCCESS,
+  USER_STATS_FAIL,
 } from '../constants/userConstants';
 
 /**
@@ -94,6 +103,120 @@ export const logout = () => (dispatch) => {
   localStorage.removeItem('cartItems');
   localStorage.removeItem('shippingAddress');
   localStorage.removeItem('paymentMethod');
+};
+
+/**
+ * Get user profile action
+ */
+export const getUserProfile = () => async (dispatch, getState) => {
+  try {
+    dispatch({ type: USER_PROFILE_REQUEST });
+
+    const {
+      userLogin: { userInfo },
+    } = getState();
+
+    const config = {
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: `Bearer ${userInfo.token}`,
+      },
+    };
+
+    const { data } = await axios.get('/api/users/profile', config);
+
+    dispatch({
+      type: USER_PROFILE_SUCCESS,
+      payload: data,
+    });
+  } catch (error) {
+    dispatch({
+      type: USER_PROFILE_FAIL,
+      payload:
+        error.response?.data?.message ||
+        error.message ||
+        'Failed to fetch profile',
+    });
+  }
+};
+
+/**
+ * Update user profile action
+ */
+export const updateUserProfile = (userData) => async (dispatch, getState) => {
+  try {
+    dispatch({ type: USER_UPDATE_PROFILE_REQUEST });
+
+    const {
+      userLogin: { userInfo },
+    } = getState();
+
+    const config = {
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: `Bearer ${userInfo.token}`,
+      },
+    };
+
+    const { data } = await axios.put('/api/users/profile', userData, config);
+
+    dispatch({
+      type: USER_UPDATE_PROFILE_SUCCESS,
+      payload: data,
+    });
+
+    // Update userInfo in localStorage with new data
+    const updatedUserInfo = { ...userInfo, ...data };
+    localStorage.setItem('userInfo', JSON.stringify(updatedUserInfo));
+
+    // Also update login state
+    dispatch({
+      type: USER_LOGIN_SUCCESS,
+      payload: updatedUserInfo,
+    });
+  } catch (error) {
+    dispatch({
+      type: USER_UPDATE_PROFILE_FAIL,
+      payload:
+        error.response?.data?.message ||
+        error.message ||
+        'Failed to update profile',
+    });
+  }
+};
+
+/**
+ * Get user statistics action
+ */
+export const getUserStats = () => async (dispatch, getState) => {
+  try {
+    dispatch({ type: USER_STATS_REQUEST });
+
+    const {
+      userLogin: { userInfo },
+    } = getState();
+
+    const config = {
+      headers: {
+        Authorization: `Bearer ${userInfo.token}`,
+      },
+    };
+
+    const { data } = await axios.get('/api/users/stats', config);
+
+    dispatch({
+      type: USER_STATS_SUCCESS,
+      payload: data,
+    });
+  } catch (error) {
+    dispatch({
+      type: USER_STATS_FAIL,
+      payload:
+        error.response?.data?.message ||
+        error.message ||
+        'Failed to fetch statistics',
+    });
+  }
 };
 
 // For backward compatibility
