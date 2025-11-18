@@ -5,6 +5,8 @@ import axios from "axios";
 import { listTenants } from "../redux/actions/tenantAction";
 import "./ManageFeaturesModal.css";
 
+const API = process.env.REACT_APP_API_URL || "";
+
 const ManageFeaturesModal = ({ show, handleClose, tenant }) => {
   const dispatch = useDispatch();
   const { userInfo } = useSelector((state) => state.userLogin);
@@ -115,7 +117,7 @@ const ManageFeaturesModal = ({ show, handleClose, tenant }) => {
         };
 
         const { data } = await axios.get(
-          `/api/products/client/${tenant._id}`,
+          `${API}/api/products/client/${tenant._id}`,
           config
         );
 
@@ -178,7 +180,7 @@ const ManageFeaturesModal = ({ show, handleClose, tenant }) => {
 
       // Save features
       await axios.post(
-        `/api/products`,
+        `${API}/api/products`,
         {
           features: enabledFeatures,
           clientId: tenant._id,

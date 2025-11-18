@@ -18,6 +18,9 @@ import {
   USER_STATS_FAIL,
 } from '../constants/userConstants';
 
+// Use configurable API base in production; fall back to relative paths in dev
+const API = process.env.REACT_APP_API_URL || '';
+
 // ✅ LOGIN
 export const login = (email, password) => async (dispatch) => {
   try {
@@ -28,7 +31,7 @@ export const login = (email, password) => async (dispatch) => {
     };
 
     const { data } = await axios.post(
-      `/api/auth/login`,
+      `${API}/api/auth/login`,
       { email, password },
       config
     );
@@ -53,7 +56,7 @@ export const register = (username, email, password) => async (dispatch) => {
     };
 
     const { data } = await axios.post(
-      `/api/auth/signup`,
+      `${API}/api/auth/signup`,
       { username, email, password },
       config
     );
@@ -90,7 +93,7 @@ export const getUserProfile = () => async (dispatch, getState) => {
       },
     };
 
-    const { data } = await axios.get(`/api/users/profile`, config);
+    const { data } = await axios.get(`${API}/api/users/profile`, config);
 
     dispatch({ type: USER_PROFILE_SUCCESS, payload: data });
   } catch (error) {
@@ -118,7 +121,7 @@ export const updateUserProfile = (userData) => async (dispatch, getState) => {
     };
 
     const { data } = await axios.put(
-      `/api/users/profile`,
+      `${API}/api/users/profile`,
       userData,
       config
     );
@@ -152,7 +155,7 @@ export const getUserStats = () => async (dispatch, getState) => {
       },
     };
 
-    const { data } = await axios.get(`/api/users/stats`, config);
+    const { data } = await axios.get(`${API}/api/users/stats`, config);
 
     dispatch({ type: USER_STATS_SUCCESS, payload: data });
   } catch (error) {

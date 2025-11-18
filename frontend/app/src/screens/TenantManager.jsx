@@ -8,6 +8,8 @@ import EditTenantModal from '../components/EditTenantModal';
 import ManageFeaturesModal from '../components/ManageFeaturesModal';
 import './TenantManager.css';
 
+const API = process.env.REACT_APP_API_URL || '';
+
 const TenantManager = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
@@ -52,7 +54,7 @@ const TenantManager = () => {
           };
 
           const { data } = await axios.get(
-            `/api/products/client/${tenant._id}`,
+            `${API}/api/products/client/${tenant._id}`,
             config
           );
 
