@@ -36,9 +36,14 @@ const tenantSchema = new mongoose.Schema(
     },
     plan: {
       type: String,
-      enum: ["Free", "Basic", "Premium", "Professional",'starter'], // added "Professional"
+      enum: ["Free", "Basic", "Premium", "Professional", "starter"], // added "Professional"
       default: "Free",
     },
+    subscribedProducts: [
+      {
+        type: String,
+      },
+    ],
   },
   { timestamps: true }
 );

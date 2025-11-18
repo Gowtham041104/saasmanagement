@@ -101,7 +101,10 @@ const ManageFeaturesModal = ({ show, handleClose, tenant }) => {
   // Load features for this tenant
   useEffect(() => {
     const loadFeatures = async () => {
-      if (!tenant || !userInfo) return;
+      if (!tenant || !userInfo || !userInfo.token) {
+        console.warn("ManageFeaturesModal: missing tenant or user/token");
+        return;
+      }
 
       setLoading(true);
       try {
@@ -133,7 +136,14 @@ const ManageFeaturesModal = ({ show, handleClose, tenant }) => {
 
         setEnabledFeatures(enabled);
       } catch (error) {
-        console.error("Error loading features:", error);
+        console.error("Error loading features:", error?.response || error);
+
+        const code = error?.response?.data?.code;
+        if (code === "TOKEN_INVALID" || code === "TOKEN_EXPIRED") {
+          alert("Your session has expired or is invalid. Please log in again.");
+          localStorage.removeItem("userInfo");
+          window.location.href = "/login";
+        }
       } finally {
         setLoading(false);
       }
@@ -152,7 +162,10 @@ const ManageFeaturesModal = ({ show, handleClose, tenant }) => {
   };
 
   const handleSave = async () => {
-    if (!tenant || !userInfo) return;
+    if (!tenant || !userInfo || !userInfo.token) {
+      alert("You must be logged in to save features.");
+      return;
+    }
 
     setSaving(true);
     try {
@@ -165,7 +178,7 @@ const ManageFeaturesModal = ({ show, handleClose, tenant }) => {
 
       // Save features
       await axios.post(
-        "/api/products",
+        `/api/products`,
         {
           features: enabledFeatures,
           clientId: tenant._id,
@@ -179,11 +192,19 @@ const ManageFeaturesModal = ({ show, handleClose, tenant }) => {
       alert("Features updated successfully!");
       handleClose();
     } catch (error) {
-      console.error("Error saving features:", error);
-      alert(
-        "Failed to save features: " +
-          (error.response?.data?.message || error.message)
-      );
+      console.error("Error saving features:", error?.response || error);
+
+      const code = error?.response?.data?.code;
+      if (code === "TOKEN_INVALID" || code === "TOKEN_EXPIRED") {
+        alert("Your session has expired or is invalid. Please log in again.");
+        localStorage.removeItem("userInfo");
+        window.location.href = "/login";
+      } else {
+        alert(
+          "Failed to save features: " +
+            (error.response?.data?.message || error.message)
+        );
+      }
     } finally {
       setSaving(false);
     }

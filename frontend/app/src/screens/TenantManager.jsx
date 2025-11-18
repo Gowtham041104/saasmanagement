@@ -50,9 +50,12 @@ const TenantManager = () => {
               Authorization: `Bearer ${userInfo.token}`,
             },
           };
-          
-          const { data } = await axios.get(`/api/products/client/${tenant._id}`, config);
-          
+
+          const { data } = await axios.get(
+            `/api/products/client/${tenant._id}`,
+            config
+          );
+
           if (data.length > 0 && data[0].features) {
             // Count enabled features
             const enabledCount = Object.values(data[0].features).filter(v => v === true).length;
@@ -61,7 +64,10 @@ const TenantManager = () => {
             counts[tenant._id] = 0;
           }
         } catch (error) {
-          console.error(`Error loading features for tenant ${tenant._id}:`, error);
+          console.error(
+            `Error loading features for tenant ${tenant._id}:`,
+            error
+          );
           counts[tenant._id] = 0;
         }
       }
@@ -249,7 +255,12 @@ const TenantManager = () => {
                       <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14" strokeLinecap="round" strokeLinejoin="round"/>
                       <path d="M22 4L12 14.01l-3-3" strokeLinecap="round" strokeLinejoin="round"/>
                     </svg>
-                    <span>{tenantFeatures[tenant._id] || 0} Features</span>
+                    <span>
+                      {(tenant.subscribedProducts?.length ??
+                        tenantFeatures[tenant._id] ??
+                        0)}{' '}
+                      Features
+                    </span>
                   </div>
                 </div>
                 <div className="tenant-badges">
