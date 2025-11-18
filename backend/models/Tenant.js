@@ -1,5 +1,13 @@
 const mongoose = require("mongoose");
 
+const PLAN_VALUES = ["Free", "Basic", "Premium", "Professional", "Enterprise", "Starter"];
+const normalizePlan = (value = "") => {
+  const trimmed = String(value || "").trim();
+  if (!trimmed) return "Free";
+  const normalized = trimmed[0].toUpperCase() + trimmed.slice(1).toLowerCase();
+  return PLAN_VALUES.includes(normalized) ? normalized : "Free";
+};
+
 const tenantSchema = new mongoose.Schema(
   {
     name: {
@@ -15,20 +23,21 @@ const tenantSchema = new mongoose.Schema(
       type: String,
     },
     domain: {
-      type: String, // ✅ Add this
+      type: String,
     },
     adminEmail: {
-      type: String, // ✅ Add this
+      type: String,
     },
     status: {
       type: String,
       enum: ["active", "inactive", "pending"],
-      default: "active", // ✅ Add this
+      default: "active",
     },
     subscriptionPlan: {
       type: String,
       enum: ["free", "professional", "enterprise", "starter"],
-      default: "free", // ✅ Add this
+      default: "free",
+      set: (value) => String(value || "").trim().toLowerCase() || "free",
     },
     isActive: {
       type: Boolean,
@@ -36,8 +45,8 @@ const tenantSchema = new mongoose.Schema(
     },
     plan: {
       type: String,
-      enum: ["Free", "Basic", "Premium", "Professional", "starter"], // added "Professional"
       default: "Free",
+      set: normalizePlan,
     },
     subscribedProducts: [
       {
