@@ -20,7 +20,7 @@ const tenantSchema = new mongoose.Schema(
       unique: true,
     },
     phone: {
-      type: String,
+      type: Number,
     },
     domain: {
       type: String,

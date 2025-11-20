@@ -32,10 +32,17 @@ exports.updateUserProfile = async (req, res) => {
       user.username = username;
     }
 
+    // Validate phone number - only numbers allowed
+    if (phone !== undefined) {
+      if (phone && !/^\d+$/.test(phone)) {
+        return res.status(400).json({ message: 'Phone number must contain only numbers' });
+      }
+      user.phone = phone;
+    }
+
     // Update fields
     if (firstName !== undefined) user.firstName = firstName;
     if (lastName !== undefined) user.lastName = lastName;
-    if (phone !== undefined) user.phone = phone;
     if (avatar !== undefined) user.avatar = avatar;
 
     await user.save();

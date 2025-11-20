@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { getUserProfile, updateUserProfile, getUserStats } from '../redux/actions/userAction';
+import { getUserProfile, updateUserProfile } from '../redux/actions/userAction';
 import './UserProfile.css';
 
 const UserProfile = () => {
@@ -11,9 +11,6 @@ const UserProfile = () => {
 
   const userUpdateProfile = useSelector((state) => state.userUpdateProfile);
   const { success } = userUpdateProfile;
-
-  const userStats = useSelector((state) => state.userStats);
-  const { stats } = userStats;
 
   const [formData, setFormData] = useState({
     firstName: '',
@@ -27,7 +24,6 @@ const UserProfile = () => {
 
   useEffect(() => {
     dispatch(getUserProfile());
-    dispatch(getUserStats());
   }, [dispatch]);
 
   useEffect(() => {
@@ -50,10 +46,21 @@ const UserProfile = () => {
   }, [success, dispatch]);
 
   const handleChange = (e) => {
-    setFormData({
-      ...formData,
-      [e.target.name]: e.target.value,
-    });
+    const { name, value } = e.target;
+    
+    // Only allow numbers for phone field
+    if (name === 'phone') {
+      const numericValue = value.replace(/\D/g, ''); // Remove all non-digit characters
+      setFormData({
+        ...formData,
+        [name]: numericValue,
+      });
+    } else {
+      setFormData({
+        ...formData,
+        [name]: value,
+      });
+    }
   };
 
   const handleSubmit = (e) => {
@@ -171,6 +178,9 @@ const UserProfile = () => {
                   name="phone"
                   value={formData.phone}
                   onChange={handleChange}
+                  pattern="[0-9]*"
+                  inputMode="numeric"
+                  placeholder="Enter numbers only"
                 />
               </div>
               <div className="form-group">
@@ -194,22 +204,6 @@ const UserProfile = () => {
             </form>
           )}
         </div>
-
-        {stats && (
-          <div className="stats-card">
-            <h2>Statistics</h2>
-            <div className="stats-grid">
-              <div className="stat-item">
-                <div className="stat-value">{stats.totalProducts || 0}</div>
-                <div className="stat-label">Total Products</div>
-              </div>
-              <div className="stat-item">
-                <div className="stat-value">{stats.activeProducts || 0}</div>
-                <div className="stat-label">Active Products</div>
-              </div>
-            </div>
-          </div>
-        )}
       </div>
     </div>
   );
